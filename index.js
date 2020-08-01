@@ -158,9 +158,7 @@ async function Roles() {
       ]
     }
   ]);
-  console.log(choice);
-  if (choice !== "add_role") {
-    console.log("choice was add role");
+  if (choice.choice == "add_role") {
     const roleInput = await prompt([
       {
         type: "input",
@@ -183,7 +181,7 @@ async function Roles() {
     setTimeout(function () {
       orm.select("role");
     }, 1000)
-  } else if(choice === "delete_role") {
+  } else if(choice.choice == "delete_role") {
     console.log("baleeted");
   }
   setTimeout(function () {
