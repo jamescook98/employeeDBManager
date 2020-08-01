@@ -86,7 +86,7 @@ async function mainScreen() {
 }
 
 async function createEmployee() {
-  const userInput = await prompt([
+  const employeeInput = await prompt([
     {
       type: "input",
       message: "Employee first name:",
@@ -108,7 +108,7 @@ async function createEmployee() {
       name: "manager_id"
     }
   ]);
-  addEmployee(userInput.first_name, userInput.last_name, userInput.role_id, userInput.manager_id);
+  addEmployee(employeeInput.first_name, employeeInput.last_name, employeeInput.role_id, employeeInput.manager_id);
   orm.select("employee");
   console.log("Employee has been added.")
   setTimeout(function () {
@@ -132,7 +132,7 @@ function updateEmployee() {
   console.log("updatin' ye employee");
 
   //which employee?
-  //
+  //update 
 }
 
 
@@ -140,8 +140,60 @@ function deleteEmployee() {
   console.log("viewin' yer employees by depARRRRtment");
 }
 
-function Roles() {
-  console.log("viewin' yer employees by rrrrrole");
+async function Roles() {
+  const choice = await prompt([
+    {
+      type: "list",
+      name: "choice",
+      message: "Please select an action.",
+      choices: [
+        {
+          name: "Add Role",
+          value: "add_role"
+        },
+        {
+          name: "Delete Role",
+          value: "delete_role"
+        }
+      ]
+    }
+  ]);
+  console.log(choice);
+  if (choice !== "add_role") {
+    console.log("choice was add role");
+    const roleInput = await prompt([
+      {
+        type: "input",
+        message: "Role title:",
+        name: "role_title"
+      },
+      {
+        type: "input",
+        message: "Role salary:",
+        name: "role_salary"
+      },
+      {
+        type: "input",
+        message: "Role department ID:",
+        name: "role_department_id"
+      }
+    ]);
+    addRole(roleInput.role_title, roleInput.role_salary, roleInput.role_department_id);
+    console.log("Role has been added.")
+    setTimeout(function () {
+      orm.select("role");
+    }, 1000)
+  } else if(choice === "delete_role") {
+    console.log("baleeted");
+  }
+  setTimeout(function () {
+    mainScreen();
+  }, 2000);
+}
+
+function addRole(role_title, role_salary, role_department_id) {
+  var queryString = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+  connection.query(queryString, [role_title, role_salary, role_department_id]);
 }
 
 function Departments() {
