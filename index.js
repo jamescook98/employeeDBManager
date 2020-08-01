@@ -1,6 +1,21 @@
+const util = require("util");
+const mysql = require("mysql");
 const { prompt } = require("inquirer");
-const db = require("./db");
 require("console.table");
+var orm = require("./config/orm.js");
+
+
+
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "password",
+  database: "employeesDB"
+});
+
+connection.connect();
+
+
 
 mainScreen();
 
@@ -57,7 +72,10 @@ async function mainScreen() {
 }
 
 function addEmployee() {
+  connection.query("INSERT INTO employee SET ?", employee);
   console.log("addin' ye employee");
+  console.log("\n");
+  console.table(employee);
 }
 
 function updateEmployee() {
@@ -65,7 +83,8 @@ function updateEmployee() {
 }
 
 function viewAllEmployees() {
-  console.log("viewin' yer employees");
+  orm.select("employee");
+  mainScreen();
 }
 
 function viewAllEmployeesByDept() {
