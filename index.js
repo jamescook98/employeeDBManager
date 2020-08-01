@@ -66,12 +66,6 @@ function updateEmployee() {
 
 function viewAllEmployees() {
   console.log("viewin' yer employees");
-  const employees = db.findAllEmployees();
-
-  console.log("\n");
-  console.table(employees);
-
-  loadMainPrompts();
 }
 
 function viewAllEmployeesByDept() {
