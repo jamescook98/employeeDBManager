@@ -1,20 +1,26 @@
 const util = require("util");
 const mysql = require("mysql");
 const { prompt } = require("inquirer");
-require("console.table");
 var orm = require("./config/orm.js");
+require("console.table");
 
 
 
-const connection = mysql.createConnection({
+var connection = mysql.createConnection({
   host: "localhost",
+  port: 3306,
   user: "root",
   password: "password",
-  database: "employeesDB"
+  database: "employees"
 });
 
-connection.connect();
-
+connection.connect(function(err) {
+  if (err) {
+    console.error("error connecting: " + err.stack);
+    return;
+  }
+  console.log("connected as id " + connection.threadId);
+});
 
 
 mainScreen();
@@ -52,7 +58,7 @@ async function mainScreen() {
 
   switch (choice) {
     case "addEmployee":
-      addEmployee();
+      createEmployee();
       return;
     case "updateEmployee":
       updateEmployee();
@@ -71,11 +77,41 @@ async function mainScreen() {
   }
 }
 
-function addEmployee() {
-  connection.query("INSERT INTO employee SET ?", employee);
-  console.log("addin' ye employee");
-  console.log("\n");
-  console.table(employee);
+async function createEmployee() {
+  const userInput = await prompt([
+    {
+      type: "input",
+      message: "Employee  ID:",
+      name: "id"
+    },
+    {
+      type: "input",
+      message: "Employee first name:",
+      name: "first_name"
+    },
+    {
+      type: "input",
+      message: "Employee last name:",
+      name: "last_name"
+    },
+    {
+      type: "input",
+      message: "Employee role ID:",
+      name: "role_id"
+    },
+    {
+      type: "input",
+      message: "Employee manager ID:",
+      name: "manager_id"
+    }
+  ]);
+  addEmployee( userInput.first_name, userInput.last_name, userInput.role_id, userInput.manager_id);
+}
+
+
+function addEmployee( first_name, last_name, role_id, manager_id) {
+  var queryString = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+  connection.query(queryString, [first_name, last_name, role_id, manager_id]);
 }
 
 function updateEmployee() {
