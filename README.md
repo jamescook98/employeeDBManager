@@ -1,6 +1,6 @@
 
 # Employee Database Manager
-[gif demonstrating functionality](assets/functionality.gif)
+![gif demonstrating functionality](assets/functionality.gif)
 
 [Video demonstrating functionality](https://drive.google.com/file/d/1W7DMnzn3EPf2tQEtiE668FP682bdFBzc/view)
 # Description
