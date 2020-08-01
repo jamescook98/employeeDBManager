@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
   database: "employees"
 });
 
-connection.connect(function(err) {
+connection.connect(function (err) {
   if (err) {
     console.error("error connecting: " + err.stack);
     return;
@@ -33,6 +33,10 @@ async function mainScreen() {
       message: "Please select an action.",
       choices: [
         {
+          name: "View All Employees",
+          value: "viewAllEmployees"
+        },
+        {
           name: "Add An Employee",
           value: "addEmployee"
         },
@@ -41,36 +45,40 @@ async function mainScreen() {
           value: "updateEmployee"
         },
         {
-          name: "View All Employees",
-          value: "viewAllEmployees"
+          name: "Delete An Employee",
+          value: "deleteEmployee"
         },
         {
-          name: "View All Employees By Department",
-          value: "viewAllEmployeesByDept"
+          name: "Roles",
+          value: "roles"
         },
         {
-          name: "View All Employees By Role",
-          value: "viewAllEmployeesByRole"
+          name: "Departments",
+          value: "departments"
         }
       ]
     }
   ]);
 
   switch (choice) {
+
+    case "viewAllEmployees":
+      viewAllEmployees();
+      return;
     case "addEmployee":
       createEmployee();
       return;
     case "updateEmployee":
       updateEmployee();
       return;
-    case "viewAllEmployees":
-      viewAllEmployees();
+    case "deleteEmployee":
+      deleteEmployee();
       return;
-    case "viewAllEmployeesByDept":
-      viewAllEmployeesByDept();
+    case "roles":
+      Roles();
       return;
-    case "viewAllEmployeesByRole":
-      viewAllEmployeesByRole();
+    case "departments":
+      Departments();
       return;
     default:
       return;
@@ -79,11 +87,6 @@ async function mainScreen() {
 
 async function createEmployee() {
   const userInput = await prompt([
-    {
-      type: "input",
-      message: "Employee  ID:",
-      name: "id"
-    },
     {
       type: "input",
       message: "Employee first name:",
@@ -105,29 +108,43 @@ async function createEmployee() {
       name: "manager_id"
     }
   ]);
-  addEmployee( userInput.first_name, userInput.last_name, userInput.role_id, userInput.manager_id);
+  addEmployee(userInput.first_name, userInput.last_name, userInput.role_id, userInput.manager_id);
+  orm.select("employee");
+  console.log("Employee has been added.")
+  setTimeout(function () {
+    mainScreen();
+  }, 2000);
 }
 
+function viewAllEmployees() {
+  orm.select("employee");
+  setTimeout(function () {
+    mainScreen();
+  }, 2000);
+}
 
-function addEmployee( first_name, last_name, role_id, manager_id) {
+function addEmployee(first_name, last_name, role_id, manager_id) {
   var queryString = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
   connection.query(queryString, [first_name, last_name, role_id, manager_id]);
 }
 
 function updateEmployee() {
   console.log("updatin' ye employee");
+
+  //which employee?
+  //
 }
 
-function viewAllEmployees() {
-  orm.select("employee");
-  mainScreen();
-}
 
-function viewAllEmployeesByDept() {
+function deleteEmployee() {
   console.log("viewin' yer employees by depARRRRtment");
 }
 
-function viewAllEmployeesByRole() {
+function Roles() {
+  console.log("viewin' yer employees by rrrrrole");
+}
+
+function Departments() {
   console.log("viewin' yer employees by rrrrrole");
 }
 // * Add departments, roles, employees
@@ -135,3 +152,5 @@ function viewAllEmployeesByRole() {
 // * View departments, roles, employees
 
 // * Update employee roles
+
+// functions: addEmployee, updateEmployee, viewAllEmployees, deleteEmployee, editRoles, editDepartments
