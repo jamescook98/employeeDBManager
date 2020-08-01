@@ -4,6 +4,7 @@ const { prompt } = require("inquirer");
 var orm = require("./config/orm.js");
 require("console.table");
 
+
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -20,9 +21,7 @@ connection.connect(function (err) {
 });
 
 
-
 mainScreen();
-
 async function mainScreen() {
   const { choice } = await prompt([
     {
@@ -59,6 +58,7 @@ async function mainScreen() {
   ]);
 
   switch (choice) {
+
     case "viewAllEmployees":
       viewAllEmployees();
       return;
@@ -137,7 +137,7 @@ async function updateEmployee() {
       name: "employee_id"
     }
   ]);
-  var nameOfEmployeeBeingUpdated = choice.employee_id;
+  var idOfEmployeeBeingUpdated = choice.employee_id;
   orm.selectByField("employee", "id", choice.employee_id)
   const updatedEmployeeInput = await prompt([
     {
@@ -162,10 +162,9 @@ async function updateEmployee() {
     }
   ]);
 
-  var queryString = "DELETE FROM employee WHERE first_name='"+nameOfEmployeeBeingUpdated+"'";
-  connection.query(queryString, nameOfEmployeeBeingUpdated);
+  var queryString = "DELETE FROM employee WHERE id='" + idOfEmployeeBeingUpdated + "'";
+  connection.query(queryString, idOfEmployeeBeingUpdated);
   addEmployee(updatedEmployeeInput.first_name, updatedEmployeeInput.last_name, updatedEmployeeInput.role_id, updatedEmployeeInput.manager_id);
-  orm.select("employee");
   console.log("Employee has been updated.")
   setTimeout(function () {
     mainScreen();
@@ -182,7 +181,7 @@ async function deleteEmployee() {
     }
   ]);
   var deletedEmployee = choice.idToBeDeleted;
-  var queryString = "DELETE FROM employee WHERE id='"+deletedEmployee+"'";
+  var queryString = "DELETE FROM employee WHERE id='" + deletedEmployee + "'";
   connection.query(queryString, deletedEmployee);
   console.log("Employee has been deleted.")
   setTimeout(function () {
@@ -241,7 +240,7 @@ async function Roles() {
     setTimeout(function () {
       orm.select("role");
     }, 1000)
-  } else if(choice.choice == "delete_role") {
+  } else if (choice.choice == "delete_role") {
     orm.select("role");
     const choice = await prompt([
       {
@@ -251,7 +250,7 @@ async function Roles() {
       }
     ]);
     var deletedRole = choice.idToBeDeleted;
-    var queryString = "DELETE FROM role WHERE id='"+deletedRole+"'";
+    var queryString = "DELETE FROM role WHERE id='" + deletedRole + "'";
     connection.query(queryString, deletedRole);
     console.log("Role has been deleted.")
   }
@@ -266,7 +265,7 @@ function addRole(role_title, role_salary, role_department_id) {
 }
 
 function deleteRole(role_id) {
-  var queryString = "DELETE FROM role WHERE id='"+role_id+"'";
+  var queryString = "DELETE FROM role WHERE id='" + role_id + "'";
   connection.query(queryString, role_id);
 }
 
@@ -311,16 +310,16 @@ async function Departments() {
     setTimeout(function () {
       orm.select("department");
     }, 1000)
-  } else if(choice.choice == "delete_department") {
+  } else if (choice.choice == "delete_department") {
     orm.select("department");
     const deleteDepartmentInput = await prompt([
       {
         type: "input",
-        message: "Which department do you want to delete?",
-        name: "department_name"
+        message: "What is the ID of the department you want to delete?",
+        name: "department_id"
       },
     ]);
-    deleteRole(deleteDepartmentInput.department_name);
+    deleteDepartment(deleteDepartmentInput.department_id);
     console.log("Department has been deleted.")
   }
   setTimeout(function () {
@@ -333,7 +332,7 @@ function addDepartment(department_name) {
   connection.query(queryString, department_name);
 }
 
-function deleteRole(department_name) {
-  var queryString = "DELETE FROM department WHERE name='"+department_name+"'";
-  connection.query(queryString, department_name);
+function deleteDepartment(department_id) {
+  var queryString = "DELETE FROM department WHERE id='" + department_id + "'";
+  connection.query(queryString, department_id);
 }
