@@ -148,6 +148,10 @@ async function Roles() {
       message: "Please select an action.",
       choices: [
         {
+          name: "View All Roles",
+          value: "view_all_roles"
+        },
+        {
           name: "Add Role",
           value: "add_role"
         },
@@ -158,7 +162,9 @@ async function Roles() {
       ]
     }
   ]);
-  if (choice.choice == "add_role") {
+  if (choice.choice == "view_all_roles") {
+    orm.select("role");
+  } else if (choice.choice == "add_role") {
     const roleInput = await prompt([
       {
         type: "input",
@@ -182,7 +188,16 @@ async function Roles() {
       orm.select("role");
     }, 1000)
   } else if(choice.choice == "delete_role") {
-    console.log("baleeted");
+    orm.select("role");
+    const deleteRoleInput = await prompt([
+      {
+        type: "input",
+        message: "Which role do you want to delete?",
+        name: "role_title"
+      },
+    ]);
+    deleteRole(deleteRoleInput.role_title);
+    console.log("Role has been deleted.")
   }
   setTimeout(function () {
     mainScreen();
@@ -192,6 +207,11 @@ async function Roles() {
 function addRole(role_title, role_salary, role_department_id) {
   var queryString = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
   connection.query(queryString, [role_title, role_salary, role_department_id]);
+}
+
+function deleteRole(role_title) {
+  var queryString = "DELETE FROM role WHERE title='"+role_title+"'";
+  connection.query(queryString, role_title);
 }
 
 function Departments() {
