@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
   port: 3306,
   user: "root",
   password: "password",
-  database: "employees"
+  database: "employeesDB"
 });
 
 connection.connect(function (err) {
@@ -85,6 +85,13 @@ async function mainScreen() {
   }
 }
 
+function viewAllEmployees() {
+  orm.select("employee");
+  setTimeout(function () {
+    mainScreen();
+  }, 2000);
+}
+
 async function createEmployee() {
   const employeeInput = await prompt([
     {
@@ -109,36 +116,88 @@ async function createEmployee() {
     }
   ]);
   addEmployee(employeeInput.first_name, employeeInput.last_name, employeeInput.role_id, employeeInput.manager_id);
-  orm.select("employee");
-  console.log("Employee has been added.")
+  setTimeout(function () {
+    orm.select("employee");
+    console.log("Employee has been added.");
+  }, 1000);
   setTimeout(function () {
     mainScreen();
   }, 2000);
 }
 
-function viewAllEmployees() {
-  orm.select("employee");
-  setTimeout(function () {
-    mainScreen();
-  }, 2000);
-}
+
 
 function addEmployee(first_name, last_name, role_id, manager_id) {
   var queryString = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
   connection.query(queryString, [first_name, last_name, role_id, manager_id]);
 }
 
-function updateEmployee() {
-  console.log("updatin' ye employee");
+async function updateEmployee() {
+  orm.select("employee");
+  console.log("\n");
+  const choice = await prompt([
+    {
+      type: "input",
+      message: "What is the ID of the employee you are updating?",
+      name: "employee_id"
+    }
+  ]);
+  var nameOfEmployeeBeingUpdated = choice.employee_id;
+  orm.selectByField("employee", "id", choice.employee_id)
+  const updatedEmployeeInput = await prompt([
+    {
+      type: "input",
+      message: "Employee first name:",
+      name: "first_name"
+    },
+    {
+      type: "input",
+      message: "Employee last name:",
+      name: "last_name"
+    },
+    {
+      type: "input",
+      message: "Employee role ID:",
+      name: "role_id"
+    },
+    {
+      type: "input",
+      message: "Employee manager ID:",
+      name: "manager_id"
+    }
+  ]);
 
-  //which employee?
-  //update 
+  var queryString = "DELETE FROM employee WHERE first_name='"+nameOfEmployeeBeingUpdated+"'";
+  connection.query(queryString, nameOfEmployeeBeingUpdated);
+  addEmployee(updatedEmployeeInput.first_name, updatedEmployeeInput.last_name, updatedEmployeeInput.role_id, updatedEmployeeInput.manager_id);
+  orm.select("employee");
+  console.log("Employee has been updated.")
+  setTimeout(function () {
+    mainScreen();
+  }, 2000);
 }
 
 
-function deleteEmployee() {
-  console.log("viewin' yer employees by depARRRRtment");
+async function deleteEmployee() {
+  orm.select("employee");
+  const choice = await prompt([
+    {
+      type: "input",
+      message: "What is the ID of the employee you want to delete?",
+      name: "idToBeDeleted"
+    }
+  ]);
+  var deletedEmployee = choice.idToBeDeleted;
+  var queryString = "DELETE FROM employee WHERE id='"+deletedEmployee+"'";
+  connection.query(queryString, deletedEmployee);
+  console.log("Employee has been deleted.")
+  setTimeout(function () {
+    mainScreen();
+  }, 2000);
 }
+
+
+//      VIEW/ADD/DELETE ROLES
 
 async function Roles() {
   const choice = await prompt([
@@ -189,14 +248,16 @@ async function Roles() {
     }, 1000)
   } else if(choice.choice == "delete_role") {
     orm.select("role");
-    const deleteRoleInput = await prompt([
+    const choice = await prompt([
       {
         type: "input",
-        message: "Which role do you want to delete?",
-        name: "role_title"
-      },
+        message: "What is the ID of the role you want to delete?",
+        name: "idToBeDeleted"
+      }
     ]);
-    deleteRole(deleteRoleInput.role_title);
+    var deletedRole = choice.idToBeDeleted;
+    var queryString = "DELETE FROM role WHERE id='"+deletedRole+"'";
+    connection.query(queryString, deletedRole);
     console.log("Role has been deleted.")
   }
   setTimeout(function () {
@@ -209,13 +270,80 @@ function addRole(role_title, role_salary, role_department_id) {
   connection.query(queryString, [role_title, role_salary, role_department_id]);
 }
 
-function deleteRole(role_title) {
-  var queryString = "DELETE FROM role WHERE title='"+role_title+"'";
-  connection.query(queryString, role_title);
+function deleteRole(role_id) {
+  var queryString = "DELETE FROM role WHERE id='"+role_id+"'";
+  connection.query(queryString, role_id);
 }
 
-function Departments() {
-  console.log("viewin' yer employees by rrrrrole");
+
+
+
+
+//      VIEW/ADD/DELETE DEPARTMENTS
+
+
+async function Departments() {
+  const choice = await prompt([
+    {
+      type: "list",
+      name: "choice",
+      message: "Please select an action.",
+      choices: [
+        {
+          name: "View All Departments",
+          value: "view_all_departments"
+        },
+        {
+          name: "Add Department",
+          value: "add_department"
+        },
+        {
+          name: "Delete Department",
+          value: "delete_department"
+        }
+      ]
+    }
+  ]);
+  if (choice.choice == "view_all_departments") {
+    orm.select("department");
+  } else if (choice.choice == "add_department") {
+    const departmentInput = await prompt([
+      {
+        type: "input",
+        message: "Department name:",
+        name: "department_name"
+      },
+    ]);
+    addDepartment(departmentInput.department_name);
+    console.log("Department has been added.")
+    setTimeout(function () {
+      orm.select("department");
+    }, 1000)
+  } else if(choice.choice == "delete_department") {
+    orm.select("department");
+    const deleteDepartmentInput = await prompt([
+      {
+        type: "input",
+        message: "Which department do you want to delete?",
+        name: "department_name"
+      },
+    ]);
+    deleteRole(deleteDepartmentInput.department_name);
+    console.log("Department has been deleted.")
+  }
+  setTimeout(function () {
+    mainScreen();
+  }, 2000);
+}
+
+function addDepartment(department_name) {
+  var queryString = "INSERT INTO department (name) VALUES (?)";
+  connection.query(queryString, department_name);
+}
+
+function deleteRole(department_name) {
+  var queryString = "DELETE FROM department WHERE name='"+department_name+"'";
+  connection.query(queryString, department_name);
 }
 // * Add departments, roles, employees
 

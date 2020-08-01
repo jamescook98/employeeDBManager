@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
   port: 3306,
   user: "root",
   password: "password",
-  database: "employees"
+  database: "employeesDB"
 });
 
 connection.connect(function(err) {
@@ -24,10 +24,9 @@ var orm = {
       console.table(result);
     });
   },
-  selectByField: function(columnToSelect, table, specificColumn, specificField) {
+  selectByField: function(table, specificColumn, specificField) {
     var queryString = "SELECT * FROM ?? WHERE ?? = ?";
-    console.log(queryString);
-    connection.query(queryString, [columnToSelect, table, specificColumn, specificField], function(err, result) {
+    connection.query(queryString, [table, specificColumn, specificField], function(err, result) {
       if (err) throw err;
       console.table(result);
     });
