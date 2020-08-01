@@ -58,7 +58,6 @@ async function mainScreen() {
   ]);
 
   switch (choice) {
-
     case "viewAllEmployees":
       viewAllEmployees();
       return;
@@ -129,7 +128,6 @@ function addEmployee(first_name, last_name, role_id, manager_id) {
 
 async function updateEmployee() {
   orm.select("employee");
-  console.log("\n");
   const choice = await prompt([
     {
       type: "input",
