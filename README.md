@@ -1,7 +1,7 @@
 
 # Employee Database Manager
 # Description
-This application allows for management of an employee database via CLI. Employees, roles, and departments can be created, viewed, updated, and deleted.
+This application allows for management of an employee database via CLI. Employees, roles, and departments can be created, viewed, updated, and deleted. It uses node.js and SQL.
 # Table of Contents
 * [Installation](#Installation)
 * [Usage](#Usage)
