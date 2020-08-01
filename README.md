@@ -4,7 +4,7 @@
 
 [Video demonstrating functionality](https://drive.google.com/file/d/1W7DMnzn3EPf2tQEtiE668FP682bdFBzc/view)
 # Description
-This application allows for management of an employee database via CLI. Employees, roles, and departments can be created, viewed, updated, and deleted. It uses node.js and SQL.
+This application allows for creation and management of an employee database via command line interface. Employees, roles, and departments can be created, viewed, updated, and deleted. It uses node.js and SQL.
 # Table of Contents
 * [Installation](#Installation)
 * [Usage](#Usage)
