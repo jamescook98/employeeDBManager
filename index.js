@@ -4,8 +4,6 @@ const { prompt } = require("inquirer");
 var orm = require("./config/orm.js");
 require("console.table");
 
-
-
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -20,6 +18,7 @@ connection.connect(function (err) {
     return;
   }
 });
+
 
 
 mainScreen();
@@ -60,7 +59,6 @@ async function mainScreen() {
   ]);
 
   switch (choice) {
-
     case "viewAllEmployees":
       viewAllEmployees();
       return;
@@ -124,8 +122,6 @@ async function createEmployee() {
   }, 2000);
 }
 
-
-
 function addEmployee(first_name, last_name, role_id, manager_id) {
   var queryString = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
   connection.query(queryString, [first_name, last_name, role_id, manager_id]);
@@ -176,7 +172,6 @@ async function updateEmployee() {
   }, 2000);
 }
 
-
 async function deleteEmployee() {
   orm.select("employee");
   const choice = await prompt([
@@ -197,6 +192,7 @@ async function deleteEmployee() {
 
 
 //      VIEW/ADD/DELETE ROLES
+
 
 async function Roles() {
   const choice = await prompt([
@@ -275,9 +271,6 @@ function deleteRole(role_id) {
 }
 
 
-
-
-
 //      VIEW/ADD/DELETE DEPARTMENTS
 
 
@@ -344,10 +337,3 @@ function deleteRole(department_name) {
   var queryString = "DELETE FROM department WHERE name='"+department_name+"'";
   connection.query(queryString, department_name);
 }
-// * Add departments, roles, employees
-
-// * View departments, roles, employees
-
-// * Update employee roles
-
-// functions: addEmployee, updateEmployee, viewAllEmployees, deleteEmployee, editRoles, editDepartments
